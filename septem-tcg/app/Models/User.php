@@ -59,4 +59,14 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
     }
+
+    public function isMember(): bool
+    {
+        return in_array($this->role, ['member', 'validator']);
+    }
+
+    public function isValidator(): bool
+    {
+        return $this->role === 'validator';
+    }
 }

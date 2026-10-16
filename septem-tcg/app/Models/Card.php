@@ -13,6 +13,21 @@ class Card extends Model
     }
 
     public function users() {
-        return $this->belongsToMany(User::class, 'users_card', 'card_id', 'user_id')->withPivot('quantity');
+        return $this->belongsToMany(User::class, 'user_cards', 'card_id', 'user_id')->withPivot('quantity');
+    }
+
+    public function scopeVisibleTo($query, ?User $user)
+    {
+        if ($user && $user->isValidator()) {
+            return $query;
+        }
+
+        $query->where('status', 'approved');
+
+        if (!$user || !$user->isMember()) {
+            $query->where('visibility', 'public');
+        }
+
+        return $query;
     }
 }
