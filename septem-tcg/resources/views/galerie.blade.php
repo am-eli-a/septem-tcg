@@ -4,6 +4,7 @@
         <div>
             <h2>{{ $card->title }}</h2>
             <p>{{ $card->number }}</p>
+            <img src = {{ asset('storage/' .$card->path) }}>
         </div>
     @empty
         <p>Aucune carte pour l'instant.</p>
