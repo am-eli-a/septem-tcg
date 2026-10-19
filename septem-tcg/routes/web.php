@@ -50,4 +50,20 @@ Route::get('cartes/{card}/image', function (Card $card) {
         ->response($card->path);
 })->name('cards.image');
 
+Route::get('collection', function () {
+    $user = auth()->user();
+    abort_unless($user->isMember(), 403);
+
+    $slots = Card::visibleTo($user)
+        ->leftJoin('user_cards', function ($join) use ($user) {
+            $join->on('cards.id', '=', 'user_cards.card_id')
+                ->where('user_cards.user_id', $user->id);
+        })
+        ->select('cards.*', 'user_cards.quantity')
+        ->orderBy('cards.number')
+        ->get();
+
+    return view('collection', ['slots' => $slots]);
+})->name('collection');
+
 require __DIR__.'/settings.php';
