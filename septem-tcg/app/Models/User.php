@@ -75,4 +75,15 @@ class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
     {
         return $this->role === 'validator';
     }
+
+    public function nextBoosterAt(): ?\Carbon\CarbonInterface
+    {
+        if (! $this->last_booster_at) {
+            return null;
+        }
+
+        $fin = $this->last_booster_at->copy()->addHours(config('booster.cooldown_hours'));
+
+        return $fin->isFuture() ? $fin : null;
+    }
 }
