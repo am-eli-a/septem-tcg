@@ -1,12 +1,16 @@
 <?php
+
 namespace App\Actions;
+
 use App\Models\User;
 use App\Models\Card;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-class OpenBooster {
 
-    private function pickRarity(): string {
+class OpenBooster
+{
+    private function pickRarity(): string
+    {
         $weights = config('booster.weights');
         $total = array_sum($weights);
         $roll = random_int(1, $total);
@@ -18,17 +22,30 @@ class OpenBooster {
                 return $rarity;
             }
         }
-        return "common";
+        return 'common';
     }
 
     private function pickCard(User $user, string $rarity): ?Card
     {
-        $query = Card::visibleTo($user)->where('status', 'approved')->where('rarity', $rarity);
-        return $query->inRandomOrder()->first();
+        return Card::visibleTo($user)
+            ->where('status', 'approved')
+            ->where('rarity', $rarity)
+            ->inRandomOrder()
+            ->first();
     }
+
     public function handle(User $user): Collection
     {
         return DB::transaction(function () use ($user) {
+
+            if ($user->last_booster_at) {
+                $fin = $user->last_booster_at->copy()->addHours(config('booster.cooldown_hours'));
+
+                if ($fin->isFuture()) {
+                    throw new \RuntimeException('Prochain booster ' . $fin->diffForHumans());
+                }
+            }
+
             $cards = collect();
             for ($i = 0; $i < config('booster.size'); $i++) {
                 $card = $this->pickCard($user, $this->pickRarity())
@@ -37,13 +54,16 @@ class OpenBooster {
                 if ($card) {
                     $owned = $user->cards()->find($card->id);
                     if ($owned) {
-                        $user->cards()->updateExistingPivot($card->id, ['quantity' => ($owned->pivot->quantity) + 1]);
+                        $user->cards()->updateExistingPivot($card->id, ['quantity' => $owned->pivot->quantity + 1]);
                     } else {
                         $user->cards()->attach($card->id, ['quantity' => 1]);
                     }
                     $cards->push($card);
                 }
-            };
+            }
+
+            $user->forceFill(['last_booster_at' => now()])->save();
+
             return $cards;
         });
     }
