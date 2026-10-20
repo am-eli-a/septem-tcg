@@ -11,19 +11,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
 });
 
-Route::middleware('auth')->group(function () {
+Route::get('en-attente', function () {
+    if (auth()->user()->isMember()) {
+        return redirect()->route('booster');
+    }
+
+    return view('pending');
+})->middleware('auth')->name('pending');
+
+Route::middleware(['auth', 'member'])->group(function () {
 
     Route::get('booster', function () {
-        abort_unless(auth()->user()->isMember(), 403);
-
         return view('booster', [
             'next' => auth()->user()->nextBoosterAt(),
         ]);
     })->name('booster');
 
     Route::post('booster', function () {
-        abort_unless(auth()->user()->isMember(), 403);
-
         try {
             $cards = (new OpenBooster)->handle(auth()->user());
         } catch (\RuntimeException $e) {
@@ -35,6 +39,21 @@ Route::middleware('auth')->group(function () {
             'next' => auth()->user()->nextBoosterAt(),
         ]);
     });
+
+    Route::get('collection', function () {
+        $user = auth()->user();
+
+        $slots = Card::visibleTo($user)
+            ->leftJoin('user_cards', function ($join) use ($user) {
+                $join->on('cards.id', '=', 'user_cards.card_id')
+                    ->where('user_cards.user_id', $user->id);
+            })
+            ->select('cards.*', 'user_cards.quantity')
+            ->orderBy('cards.number')
+            ->get();
+
+        return view('collection', ['slots' => $slots]);
+    })->name('collection');
 });
 
 Route::get('galerie', function () {
@@ -49,21 +68,5 @@ Route::get('cartes/{card}/image', function (Card $card) {
     return Storage::disk($card->visibility === 'public' ? 'public' : 'local')
         ->response($card->path);
 })->name('cards.image');
-
-Route::get('collection', function () {
-    $user = auth()->user();
-    abort_unless($user->isMember(), 403);
-
-    $slots = Card::visibleTo($user)
-        ->leftJoin('user_cards', function ($join) use ($user) {
-            $join->on('cards.id', '=', 'user_cards.card_id')
-                ->where('user_cards.user_id', $user->id);
-        })
-        ->select('cards.*', 'user_cards.quantity')
-        ->orderBy('cards.number')
-        ->get();
-
-    return view('collection', ['slots' => $slots]);
-})->name('collection');
 
 require __DIR__.'/settings.php';
