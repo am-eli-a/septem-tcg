@@ -1,69 +1,59 @@
-<x-layouts::auth :title="__('Register')">
-    <div class="flex flex-col gap-6">
-        <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+@php
+    $input = 'w-full rounded-xl bg-card border border-white/10 px-4 py-3 text-cream placeholder:text-muted focus:border-gold focus:outline-none';
+@endphp
 
-        <!-- Session Status -->
-        <x-auth-session-status class="text-center" :status="session('status')" />
+<x-layouts.site>
+    <x-slot:title>Créer un compte</x-slot:title>
 
-        <form method="POST" action="{{ route('register.store') }}" class="flex flex-col gap-6">
+    <div class="max-w-md mx-auto mt-6 md:mt-12">
+        <h1 class="font-display uppercase text-4xl md:text-6xl leading-none">Créer un compte</h1>
+        <p class="text-muted mt-2">Ton compte devra ensuite être validé pour ouvrir des boosters.</p>
+
+        <form method="POST" action="{{ route('register.store') }}" class="mt-8 flex flex-col gap-5 bg-card/50 border border-white/10 rounded-2xl p-6 md:p-8">
             @csrf
-            <!-- Name -->
-            <flux:input
-                name="name"
-                :label="__('Name')"
-                :value="old('name')"
-                type="text"
-                required
-                autofocus
-                autocomplete="name"
-                :placeholder="__('Full name')"
-            />
 
-            <!-- Email Address -->
-            <flux:input
-                name="email"
-                :label="__('Email address')"
-                :value="old('email')"
-                type="email"
-                required
-                autocomplete="email"
-                placeholder="email@example.com"
-            />
-
-            <!-- Password -->
-            <flux:input
-                name="password"
-                :label="__('Password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Password')"
-                passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                viewable
-            />
-
-            <!-- Confirm Password -->
-            <flux:input
-                name="password_confirmation"
-                :label="__('Confirm password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                :placeholder="__('Confirm password')"
-                passwordrules="{{ \Illuminate\Validation\Rules\Password::defaults()->toPasswordRulesString() }}"
-                viewable
-            />
-
-            <div class="flex items-center justify-end">
-                <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
-                    {{ __('Create account') }}
-                </flux:button>
+            <div>
+                <label for="name" class="block font-medium mb-2">Nom</label>
+                <input id="name" name="name" type="text" value="{{ old('name') }}" required autofocus
+                       autocomplete="name" placeholder="Ton prénom ou pseudo" class="{{ $input }}">
+                @error('name')
+                <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
+                @enderror
             </div>
+
+            <div>
+                <label for="email" class="block font-medium mb-2">Adresse e-mail</label>
+                <input id="email" name="email" type="email" value="{{ old('email') }}" required
+                       autocomplete="email" placeholder="email@exemple.com" class="{{ $input }}">
+                @error('email')
+                <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password" class="block font-medium mb-2">Mot de passe</label>
+                <input id="password" name="password" type="password" required
+                       autocomplete="new-password" placeholder="Mot de passe" class="{{ $input }}">
+                @error('password')
+                <p class="text-red-400 text-sm mt-2">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="password_confirmation" class="block font-medium mb-2">Confirmer le mot de passe</label>
+                <input id="password_confirmation" name="password_confirmation" type="password" required
+                       autocomplete="new-password" placeholder="Confirmer le mot de passe" class="{{ $input }}">
+            </div>
+
+            <button type="submit" data-test="register-user-button"
+                    class="rounded-full bg-gold text-ink font-bold px-8 py-3 cursor-pointer">
+                Créer mon compte
+            </button>
         </form>
 
-        <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-            <span>{{ __('Already have an account?') }}</span>
-            <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
-        </div>
+        <p class="mt-6 text-center text-sm text-muted">
+            Déjà un compte ?
+            <a href="{{ route('login') }}" class="text-gold font-bold">Se connecter</a>
+        </p>
     </div>
-</x-layouts::auth>
+</x-layouts.site>

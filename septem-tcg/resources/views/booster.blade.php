@@ -27,19 +27,22 @@
     @enderror
 
     @isset($cards)
-        <div class="mt-10 grid gap-5 grid-cols-[repeat(auto-fit,minmax(170px,1fr))]">
+        <div class="mt-10 grid grid-cols-6 md:gap-3 gap-1 md:grid-cols-5 md:gap-5">
             @foreach ($cards as $card)
                 @php $qty = auth()->user()->cards()->find($card->id)?->pivot->quantity; @endphp
                 <button type="button" data-flip aria-label="Carte face cachée, clique pour la retourner"
-                        class="card-flip block w-full aspect-[1240/1754] cursor-pointer">
+                    @class([
+                        'card-flip block w-full aspect-[1240/1754] cursor-pointer col-span-2 md:col-span-1',
+                        'col-start-2 md:col-start-auto' => $loop->iteration === 4,
+                    ])>
                     <div class="card-flip-inner">
                         <div class="card-face card-back">
-                            <img src="{{ asset('storage/logo/Logo_FNpng.png') }}" alt="" class="w-3/4 h-auto">
+                            <img src="{{ asset('storage/logo/Logo_FNpng.png') }}" alt="Logo Septem 24" class="w-3/4 h-auto">
                         </div>
                         <div class="card-face card-front">
                             <img src="{{ route('cards.image', $card) }}" alt="{{ $card->title }}"
                                  class="w-full h-full rounded-xl shadow-2xl">
-                            <span class="absolute right-2.5 top-2.5 rounded-full bg-gold text-ink font-display px-3 py-1">
+                            <span class="absolute md:right-2.5 md:top-2.5 right-1 top-1 rounded-full bg-gold text-ink font-display md:px-3 md:py-1 px-2 py-1">
                                 {{ $qty > 1 ? 'x'.$qty : 'NEW' }}
                             </span>
                         </div>

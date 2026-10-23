@@ -30,4 +30,11 @@ class Card extends Model
 
         return $query;
     }
+
+    public function getImageUrlAttribute(): string
+    {
+        return $this->visibility === 'public'
+            ? asset('storage/'.$this->path)
+            : route('cards.image', $this);
+    }
 }
