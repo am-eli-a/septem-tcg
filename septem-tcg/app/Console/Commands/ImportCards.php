@@ -10,7 +10,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 #[Signature('cards:import')]
-#[Description('Importe les cartes du dossier storage/app/private/cards')]
+#[Description('Importe les nouvelles cartes des dossiers de stockage, sans toucher aux existantes')]
 class ImportCards extends Command
 {
     public function handle()
@@ -34,13 +34,25 @@ class ImportCards extends Command
             ['disk' => 'local',  'dir' => 'cards',      'type' => 'member',    'visibility' => 'internal'],
         ];
 
-        Card::query()->delete();
-
         $user = User::first();
-        $number = 1;
+
+        if (! $user) {
+            $this->error('Aucun utilisateur trouvé : crée un compte avant d\'importer.');
+
+            return;
+        }
+
+        $known = Card::pluck('path')->all();
+        $number = (int) Card::max('number');
+        $created = 0;
 
         foreach ($sources as $source) {
-            $files = Storage::disk($source['disk'])->files($source['dir']);
+            $files = array_filter(
+                Storage::disk($source['disk'])->files($source['dir']),
+                fn ($file) => in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['png', 'jpg', 'jpeg', 'webp'])
+                    && ! in_array($file, $known)
+            );
+
             usort($files, function ($a, $b) use ($prefixOf, $order) {
                 $byRarity = array_search($prefixOf($a), $order) <=> array_search($prefixOf($b), $order);
 
@@ -53,21 +65,31 @@ class ImportCards extends Command
             });
 
             foreach ($files as $file) {
+                $rarity = $rarities[$prefixOf($file)] ?? null;
+
+                if (! $rarity) {
+                    $this->warn("Rareté inconnue, ignoré : {$file}");
+
+                    continue;
+                }
+
+                $number++;
+
                 Card::forceCreate([
                     'title' => pathinfo($file, PATHINFO_FILENAME),
                     'path' => $file,
                     'type' => $source['type'],
                     'visibility' => $source['visibility'],
                     'status' => 'approved',
-                    'rarity' => $rarities[$prefixOf($file)],
+                    'rarity' => $rarity,
                     'number' => $number,
                     'uploaded_by' => $user->id,
                 ]);
 
-                $number++;
+                $created++;
             }
         }
 
-        $this->info(($number - 1).' cartes importées');
+        $this->info("{$created} nouvelle(s) carte(s) importée(s)");
     }
 }
