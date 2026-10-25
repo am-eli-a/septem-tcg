@@ -1,4 +1,5 @@
 <x-layouts.site>
+    <x-slot:title>Galerie</x-slot:title>
     <div>
         <h1 class="font-display uppercase text-4xl md:text-6xl leading-none">La galerie</h1>
         <p class="text-muted">Les personnages des courts métrages, ouverts à tous les visiteurs</p>
@@ -14,4 +15,3 @@
        @endforelse
     </div>
 </x-layouts.site>
-<x-slot:title>Galerie</x-slot:title>

@@ -6,6 +6,7 @@
     <title>{{ $title ?? 'Septem TCG' }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;500;700&display=swap">
+    <link rel="icon" href="{{ asset('favicon.png') }}?v=2" type="image/png">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-ink text-cream font-body flex flex-col min-h-screen">

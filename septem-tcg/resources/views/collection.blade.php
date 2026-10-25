@@ -1,4 +1,5 @@
 <x-layouts.site>
+    <x-slot:title>Collection</x-slot:title>
     <div class="flex justify-between flex-wrap items-end gap-3 md:gap-7">
         <div class="flex flex-col gap-3">
             <h1 class="font-display uppercase text-4xl md:text-6xl leading-none">Ma collection</h1>
