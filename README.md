@@ -79,4 +79,4 @@ Projet bénévole réalisé pour l'association **Septem 24**, avec analyse des b
 ## 👩‍💻 Auteure
 
 **Amelia Dufour-Lazrek**, étudiante en BUT Informatique
-[GitHub](https://github.com/am-eli-a) · [LinkedIn](https://www.linkedin.com/in/am-eli-a)
+[GitHub](https://github.com/am-eli-a) · [LinkedIn](https://www.linkedin.com/in/amelia-dufour-lazrek-159101375/)
