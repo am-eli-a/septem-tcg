@@ -18,7 +18,7 @@ class Card extends Model
 
     public function scopeVisibleTo($query, ?User $user)
     {
-        if ($user && $user->isValidator()) {
+        if ($user?->isValidator() || $user?->isDev()) {
             return $query;
         }
 

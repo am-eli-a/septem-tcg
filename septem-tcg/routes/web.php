@@ -58,17 +58,10 @@ Route::middleware(['auth'])->group(function () {
     Route::put('profil/password', [ProfileController::class, 'updatePassword'])->name('profil.password');
 });
 
-Route::get('en-attente', function () {
-    if (auth()->user()->isMember()) {
-        return redirect()->route('booster');
-    }
-
-    return view('pending');
-})->middleware('auth')->name('pending');
-
-Route::middleware(['auth', 'member'])->group(function () {
-
-
+Route::middleware(['auth', 'validator'])->group(function () {
+    Route::get('validator/dashboard', function () {
+        return view('validation', []);
+    })->name('validator.dashboard');
 });
 
 Route::get('galerie', function () {

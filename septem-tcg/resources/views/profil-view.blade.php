@@ -58,6 +58,10 @@
                     <dd class="tracking-widest font-bold text-lg">••••••••••</dd>
                 </div>
                 <div>
+                    <dt class="text-gold text-xl">Role</dt>
+                    <dd class="font-bold text-lg">{{ $user->role }}</dd>
+                </div>
+                <div>
                     <dt class="text-gold text-xl">Membre depuis le</dt>
                     <dd class="font-bold text-lg">{{ $user->created_at->format('d/m/Y') }}</dd>
                 </div>

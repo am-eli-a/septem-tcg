@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'member' => \App\Http\Middleware\EnsureIsMember::class,
+            'validator' => \App\Http\Middleware\EnsureIsValidator::class,
         ]);
 
         $middleware->trustProxies(at: '*');

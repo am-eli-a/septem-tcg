@@ -67,7 +67,7 @@ class User extends Authenticatable implements PasskeyUser
 
     public function isMember(): bool
     {
-        return in_array($this->role, ['member', 'validator']);
+        return in_array($this->role, ['member', 'validator', 'dev']);
     }
 
     public function isValidator(): bool
