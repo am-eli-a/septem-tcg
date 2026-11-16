@@ -1,6 +1,7 @@
 <?php
 
 use App\Actions\OpenBooster;
+use App\Http\Controllers\ProfileController;
 use App\Models\Card;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -58,11 +59,22 @@ Route::middleware(['auth', 'member'])->group(function () {
 
         return view('collection', ['slots' => $slots]);
     })->name('collection');
+
+    Route::get('profil', function () {
+        $user = auth()->user();
+        return view('profil-view', ['next' => $user->nextBoosterAt(), 'user' => $user]);
+    })->name('profil');
+
+    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profil.destroy');
+
+    Route::get('profil-edit', function () {
+        $user = auth()->user();
+        return view('profil-edit', ['user' => $user]);
+    })->name('profil-edit');
 });
 
 Route::get('galerie', function () {
-    $cards = Card::visibleTo(null)->orderBy('number')->get();
-
+    $cards = Card::visibleTo(auth()->user())->orderBy('number')->get();
     return view('galerie', ['cards' => $cards]);
 })->name('galerie');
 
