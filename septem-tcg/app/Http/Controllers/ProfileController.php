@@ -27,11 +27,11 @@ class ProfileController extends Controller
         $email_unique = Rule::unique('users', 'email')->ignore(auth()->user()->id);
 
         $validated = $request->validate([
-            'name'  => ['required', 'string', 'max:255', $pseudo_unique],
+            'name'  => ['required', 'string', 'max:50', $pseudo_unique],
             'email' => ['required', 'email', $email_unique],
         ]);
 
-        $request->user()->update(['name' => $validated]);
+        $request->user()->update($validated);
         return back()->with('status', 'Profil mis à jour !');
 
     }

@@ -3,7 +3,7 @@
     <div>
         <p class="uppercase text-xs text-gold mb-5">Espace membre</p>
         <h1 class="font-display uppercase text-4xl md:text-6xl leading-none">Mon profil</h1>
-        <p class="my-5 text-muted max-w-md">Ton espace de membre : tes boosters, ta collection et les dernières nouvelles.</p>
+        <p class="my-5 text-muted max-w-md">Ton espace d'utilisateur : tes boosters, ta collection et les dernières nouvelles.</p>
     </div>
 
     <div class="flex flex-wrap justify-center gap-6 mb-10 md:gap-10 mt-10">

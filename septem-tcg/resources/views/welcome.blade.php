@@ -69,12 +69,12 @@
             <div class="bg-card p-6 rounded-2xl flex-1 basis-[260px] max-w-sm">
                 <p class="font-display text-4xl md:text-6xl leading-none text-gold">02</p>
                 <h3 class="font-bold text-xl my-4">Fais valider ton compte</h3>
-                <p class="text-muted">Envoie-moi un message avec ton mail sur insta (@amelia.dlzr) et je t'ouvre l'accès aux boosters.</p>
+                <p class="text-muted">Si tu es un membre de Septem 24, envoie-moi un message avec ton mail sur insta (@amelia.dlzr) et je t'ouvre l'accès aux boosters membres.</p>
             </div>
             <div class="bg-card p-6 rounded-2xl flex-1 basis-[260px] max-w-sm">
                 <p class="font-display text-4xl md:text-6xl leading-none text-gold">03</p>
                 <h3 class="font-bold text-xl my-4">Ouvre des boosters</h3>
-                <p class="text-muted">Cinq cartes à chaque ouverture, toutes les 5 heures. Ta collection se remplit, les trous te montrent ce qu'il manque.</p>
+                <p class="text-muted">Cinq cartes à chaque ouverture, toutes les 6 heures. Ta collection se remplit, les trous te montrent ce qu'il manque.</p>
             </div>
         </div>
     </section>

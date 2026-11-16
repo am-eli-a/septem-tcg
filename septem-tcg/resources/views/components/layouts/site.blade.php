@@ -34,14 +34,10 @@
             @endguest
 
             @auth
-                @if (auth()->user()->isMember())
                     <a href="{{ route('booster') }}">Booster</a>
                     <a href="{{ route('collection') }}">Ma collection</a>
                     <a href="{{ route('galerie') }}">Galerie</a>
-                @else
-                    <a href="{{ route('galerie') }}">Galerie</a>
-                    <a href="{{ route('pending') }}">Compte en attente</a>
-                @endif
+                    <a href="{{ route('profil') }}">Mon profil</a>
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf

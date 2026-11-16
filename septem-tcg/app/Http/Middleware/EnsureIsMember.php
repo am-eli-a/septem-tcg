@@ -16,7 +16,7 @@ class EnsureIsMember
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->user()?->isMember()) {
-            return redirect()->route('pending');
+            return redirect()->route('profil');
         }
 
         return $next($request);
