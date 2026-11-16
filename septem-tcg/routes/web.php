@@ -14,17 +14,21 @@ Route::get('/', function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::view('dashboard', 'dashboard')->name('dashboard');
-});
 
-Route::get('en-attente', function () {
-    if (auth()->user()->isMember()) {
-        return redirect()->route('booster');
-    }
+    Route::get('collection', function () {
+        $user = auth()->user();
 
-    return view('pending');
-})->middleware('auth')->name('pending');
+        $slots = Card::visibleTo($user)
+            ->leftJoin('user_cards', function ($join) use ($user) {
+                $join->on('cards.id', '=', 'user_cards.card_id')
+                    ->where('user_cards.user_id', $user->id);
+            })
+            ->select('cards.*', 'user_cards.quantity')
+            ->orderBy('cards.number')
+            ->get();
 
-Route::middleware(['auth', 'member'])->group(function () {
+        return view('collection', ['slots' => $slots]);
+    })->name('collection');
 
     Route::get('booster', function () {
         return view('booster', [
@@ -45,32 +49,26 @@ Route::middleware(['auth', 'member'])->group(function () {
         ]);
     });
 
-    Route::get('collection', function () {
-        $user = auth()->user();
+    Route::get('profil', [ProfileController::class, 'show'])->name('profil');
+    Route::get('profil-edit', [ProfileController::class, 'edit'])->name('profil-edit');
 
-        $slots = Card::visibleTo($user)
-            ->leftJoin('user_cards', function ($join) use ($user) {
-                $join->on('cards.id', '=', 'user_cards.card_id')
-                    ->where('user_cards.user_id', $user->id);
-            })
-            ->select('cards.*', 'user_cards.quantity')
-            ->orderBy('cards.number')
-            ->get();
+    Route::delete('profil', [ProfileController::class, 'destroy'])->name('profil.destroy');
 
-        return view('collection', ['slots' => $slots]);
-    })->name('collection');
+    Route::put('profil', [ProfileController::class, 'update'])->name('profil.update');
+    Route::put('profil/password', [ProfileController::class, 'updatePassword'])->name('profil.password');
+});
 
-    Route::get('profil', function () {
-        $user = auth()->user();
-        return view('profil-view', ['next' => $user->nextBoosterAt(), 'user' => $user]);
-    })->name('profil');
+Route::get('en-attente', function () {
+    if (auth()->user()->isMember()) {
+        return redirect()->route('booster');
+    }
 
-    Route::delete('profile', [ProfileController::class, 'destroy'])->name('profil.destroy');
+    return view('pending');
+})->middleware('auth')->name('pending');
 
-    Route::get('profil-edit', function () {
-        $user = auth()->user();
-        return view('profil-edit', ['user' => $user]);
-    })->name('profil-edit');
+Route::middleware(['auth', 'member'])->group(function () {
+
+
 });
 
 Route::get('galerie', function () {

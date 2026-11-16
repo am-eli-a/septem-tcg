@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class ProfileController extends Controller
 {
@@ -21,7 +23,17 @@ class ProfileController extends Controller
      */
     public function update(Request $request)
     {
-        //
+        $pseudo_unique = Rule::unique('users', 'name')->ignore(auth()->user()->id);
+        $email_unique = Rule::unique('users', 'email')->ignore(auth()->user()->id);
+
+        $validated = $request->validate([
+            'name'  => ['required', 'string', 'max:255', $pseudo_unique],
+            'email' => ['required', 'email', $email_unique],
+        ]);
+
+        $request->user()->update(['name' => $validated]);
+        return back()->with('status', 'Profil mis à jour !');
+
     }
 
     /**
@@ -33,11 +45,20 @@ class ProfileController extends Controller
         $request->validate([
             'password' => ['required', 'current_password'],
         ]);
-        $request->user();
         Auth::logout();
         $user->delete();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
         return redirect('/');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+        $request->user()->update(['password' => $validated['password']]);
+        return back()->with('status', 'Mot de passe mis à jour !');
     }
 }

@@ -75,6 +75,11 @@ class User extends Authenticatable implements PasskeyUser
         return $this->role === 'validator';
     }
 
+    public function isDev(): bool
+    {
+        return $this->role === 'dev';
+    }
+
     public function nextBoosterAt(): ?\Carbon\CarbonInterface
     {
         if (! $this->last_booster_at) {

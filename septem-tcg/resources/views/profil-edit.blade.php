@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form method="POST" action="#" class="bg-card rounded-2xl p-6 flex flex-col gap-5">
+        <form method="POST" action="{{ route('profil.update') }}" class="bg-card rounded-2xl p-6 flex flex-col gap-5">
             @csrf
             @method('PUT')
             <h2 class="font-display uppercase text-2xl md:text-3xl leading-none">Informations</h2>
@@ -45,7 +45,7 @@
             </div>
         </form>
 
-        <form method="POST" action="#" class="bg-card rounded-2xl p-6 flex flex-col gap-5">
+        <form method="POST" action="{{ route('profil.password') }}" class="bg-card rounded-2xl p-6 flex flex-col gap-5">
             @csrf
             @method('PUT')
             <h2 class="font-display uppercase text-2xl md:text-3xl leading-none">Mot de passe</h2>
